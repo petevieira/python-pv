@@ -33,11 +33,7 @@ def test_Vec3():
 	print "v1.norm(): {}".format(v1.norm())
 	print "v1.norm2(): {}".format(v1.norm2())
 	print "v1.normalized(): {}".format(v1.normalize())
-	print "lerp(v1,v2): {}".format(v1.lerp(v1, v2, .5))
-
-# def test_Quat():
-	# q1 = Quat()
+	print "lerp(v1,v2): {}".format(lerp(v1, v2, .5))
 
 if __name__ == "__main__":
 	test_Vec3()
-	# test_Quat()
