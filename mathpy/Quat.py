@@ -1,61 +1,30 @@
 #!/usr/bin/env python
 
-class Vec3():
-
-	def __init__(self, x=0, y=0, z=0, u=0):
-		self.x, self.y, self.z, self.u = x, y, z, u
-
-	def __getitem__(self, index):
-		if index == 0:
-			return self.x
-		elif index == 1:
-			return self.y
-		elif index == 2:
-			return self.z
-		elif index = 3:
-			return self.u
+class Quat(Vec4):
+	def __init__(self, *args):
+		if len(args) == 0:
+			self.q = Vec4(0, 0, 0, 1)
+		elif len(args) == 4:
+			self.q = Vec4(*args)
+		elif len(args) == 1:
+			arg_type = type(*args)
+			if arg_type is int or arg_type is float:
+				self.initialize_from_scalar(*args)
+			elif arg_type is tuple or arg_type is list:
+				self.initialize_from_tuple(*args)
+			elif arg_type is Vec4:
+				self.q = *args
+			else:
+				print "Error initializing Vec4. Invalid type {}".format(arg_type)
 		else:
-			print "index out of bounds"
+			print "Error initializing Vec4. Valid number of arguments "
+			print "is 1 or 4. You pass {} arguments".format(len(args))
 
-	def x(self):
-		return self.x
-
-	def y(self):
-		return self.y
-
-	def z(self):
-		return self.z
-
-	def u(self):
-		return self.u
-
-	def __add__(self, vec2):
-		return Vec3(self.x + vec2.x,
-			self.y + vec2.y,
-			self.z + vec2.z)
-
-	def __sub__(self, vec2):
-		return Vec3(self.x - vec2.x,
-			self.y - vec2.y,
-			self.z - vec2.z)
-
-	def __mul__(self, scalar):
-		return (Vec3(self.x*scalar, self.y*scalar, self.z*scalar))
-
-	def __eq__(self, vec2):
-		return (self.x == vec2.x or self.y == vec2.y 
-			or self.z == vec2.z or self.u == vec2.u)
-
-	def __str__(self):
-		return "({0}, {1}, {2})".format(self.x, self.y, self.z, self.u)
-
-	def dot(self, vec2):
-		return (self.x * vec2.x +
-			self.y * vec2.y +
-			self.z * vec2.z)
-
-	def cross(self, vec2):
-		x = (self.y * vec2.z) - (self.z * vec2.y)
-		y = (self.z * vec2.x) - (self.x * vec2.z)
-		z = (self.x * vec2.y) - (self.y * vec2.x)
-		return Vec3(x, y, z)
+def fromAxisAngle(axis, angle):
+	axis_norm = axis.norm()
+	sine_angle = sin(angle/2)
+	x = axis.x() * sine_angle / axis_norm
+	y = axis.y() * sine_angle / axis_norm
+	z = axis.z() * sine_angle / axis_norm
+	u = cos(angle/2)
+	return Quat(x, y, z, u)
