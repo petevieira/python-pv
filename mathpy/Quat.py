@@ -20,7 +20,7 @@ class Quat(Vec4):
 			print "Error initializing Vec4. Valid number of arguments "
 			print "is 1 or 4. You pass {} arguments".format(len(args))
 
-def fromAxisAngle(axis, angle):
+def from_axis_angle(axis, angle):
 	axis_norm = axis.norm()
 	sine_angle = sin(angle/2)
 	x = axis.x() * sine_angle / axis_norm

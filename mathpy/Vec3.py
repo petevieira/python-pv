@@ -130,7 +130,8 @@ class Vec3():
 		z = (self.x * vec2.y) - (self.y * vec2.x)
 		return Vec3(x, y, z)
 
-def lerp(vec1, vec2, u):
-	if u < 0: return vec1
-	if u > 1: return vec2
-	return (1-u)*vec1 + u*vec2
+	@staticmethod
+	def lerp(vec1, vec2, u):
+		if u < 0: return vec1
+		if u > 1: return vec2
+		return (1-u)*vec1 + u*vec2
