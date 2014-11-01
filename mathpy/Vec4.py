@@ -7,38 +7,50 @@ class Vec4():
 	def __init__(self, *args):
 		self.x, self.y, self.z, self.w = 0, 0, 0, 1
 		if len(args) == 0:
-			initialize_from_scalar(0, 0, 0, 0)
+			self.__initialize_from_scalar(0, 0, 0, 0)
 		elif len(args) == 4:
-			self.initialize_from_floats(*args)
+			self.__initialize_from_floats(*args)
 		elif len(args) == 1:
 			arg_type = type(*args)
 			if arg_type is int or arg_type is float:
-				self.initialize_from_scalar(*args)
+				self.__initialize_from_scalar(*args)
 			elif arg_type is tuple or arg_type is list:
-				self.initialize_from_tuple(*args)
+				self.__initialize_from_tuple(*args)
 			else:
 				print "Error initializing Vec4. Invalid type {}".format(arg_type)
 		else:
 			print "Error initializing Vec4. Valid number of arguments "
 			print "is 1 or 4. You pass {} arguments".format(len(args))
 
-	def initialize_from_floats(self, x, y, z, w):
+	def __initialize_from_floats(self, x, y, z, w):
 		self.x = x
 		self.y = y
 		self.z = z
 		self.w = w
 
-	def initialize_from_tuple(self, xyzw):
+	def __initialize_from_tuple(self, xyzw):
 		self.x = xyzw[0]
 		self.y = xyzw[1]
 		self.z = xyzw[2]
 		self.w = xyzw[3]
 
-	def initialize_from_scalar(self, scalar):
+	def __initialize_from_scalar(self, scalar):
 		self.x = scalar
 		self.y = scalar
 		self.z = scalar
 		self.w = scalar
+
+	def x(self):
+		return self.x
+
+	def y(self):
+		return self.y
+
+	def z(self):
+		return self.z
+
+	def w(self):
+		return self.w
 
 	def __getitem__(self, index):
 		if index == 0:
@@ -52,17 +64,20 @@ class Vec4():
 		else:
 			print "index out of bounds"
 
-	def x(self):
-		return self.x
+	def __setitem__(self, index, value):
+		if index == 0:
+			self.x = value
+		elif index == 1:
+			self.y = value
+		elif index == 2:
+			self.z = value
+		elif index == 3:
+			self.w = value
+		else:
+			print "index out of bounds"
 
-	def y(self):
-		return self.y
-
-	def z(self):
-		return self.z
-
-	def w(self):
-		return self.w
+	def __len__(self):
+		return 4
 
 	def __add__(self, vec2):
 		return Vec4(self.x + vec2.x, self.y + vec2.y,

@@ -3,7 +3,7 @@
 import sys
 from Vec3 import *
 from Mat3 import *
-from Quat import *
+# from Quat import *
 
 def test_Vec3():
 	print "Testing Vec3...\n"
@@ -21,6 +21,8 @@ def test_Vec3():
 	print "v1: {}".format(v1)
 	print "v2: {}".format(v2)
 	print "v3: {}".format(v3)
+	print "v4: {}".format(v4)
+	v4[0] = -50
 	print "v4: {}".format(v4)
 	print "v1 + v2: {}".format(v1 + v2)
 	print "v1 - v2: {}".format(v1 - v2)

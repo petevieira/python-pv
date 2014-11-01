@@ -6,27 +6,27 @@ class Vec3():
 
 	def __init__(self, *args):
 		if len(args) == 3:
-			self.initialize_from_xyz(*args)
+			self.__initialize_from_xyz(*args)
 		elif len(args) == 1:
 			arg_type = type(*args)
 			if arg_type is int or arg_type is float:
-				self.initialize_from_scalar(*args)
+				self.__initialize_from_scalar(*args)
 			elif arg_type is tuple or arg_type is list:
-				self.initialize_from_tuple(*args)
+				self.__initialize_from_tuple(*args)
 			else:
 				print "error"
 
-	def initialize_from_xyz(self, x, y, z):
+	def __initialize_from_xyz(self, x, y, z):
 		self.x = x
 		self.y = y
 		self.z = z
 
-	def initialize_from_tuple(self, xyz):
+	def __initialize_from_tuple(self, xyz):
 		self.x = xyz[0]
 		self.y = xyz[1]
 		self.z = xyz[2]
 
-	def initialize_from_scalar(self, scalar):
+	def __initialize_from_scalar(self, scalar):
 		self.x = scalar
 		self.y = scalar
 		self.z = scalar
@@ -41,6 +41,16 @@ class Vec3():
 		else:
 			print "index out of bounds"
 
+	def __setitem__(self, index, value):
+		if index == 0:
+			self.x = value
+		elif index == 1:
+			self.y = value
+		elif index == 2:
+			self.z = value
+		else:
+			print "index out of bounds"
+
 	def x(self):
 		return self.x
 
@@ -49,6 +59,9 @@ class Vec3():
 
 	def z(self):
 		return self.z
+
+	def __len__(self):
+		return 3
 
 	def __add__(self, vec2):
 		return Vec3(self.x + vec2.x,

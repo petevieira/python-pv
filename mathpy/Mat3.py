@@ -17,9 +17,9 @@ class Mat3:
       if isinstance(args[0], Mat3):
         self.__initialize_from_mat3(*args)
     elif len(args) == 9:
-      self.__initialize_from_row_major_matrix(*args)
+      self.__initialize_from_row_major_ret_mat(*args)
 
-  def __initialize_from_row_major_matrix(self, 
+  def __initialize_from_row_major_ret_mat(self, 
     m00, m01, m02,
     m10, m11, m12,
     m20, m21, m22):
@@ -100,34 +100,91 @@ class Mat3:
   def inv(self):
     return self.inverse()
 
-  def __eq__(self, m):
+  @staticmethod
+  def cross(self, vec):
+    mat = Mat3()
+    mat[0,0] =    0 ; mat[0,1] = -v[2]; mat[0,2] =  v[1]
+    mat[1,0] =  v[2]; mat[1,1] =    0 ; mat[1,2] = -v[0]
+    mat[2,0] = -v[1]; mat[2,1] =  v[0]; mat[2,2] =    0
+    return m
+
+  @staticmethod
+  def outer(self, vec1, vec2):
+    ret_mat = Mat3()
+    for row in range(0,2):
+      for col in range(0,2):
+        ret_mat[row, col] = vec1[row] * vec2[col]
+    return ret_mat
+
+  def __getitem__(self, *args):
+    if len(args) == 1:
+      return self.data[args[0]]
+    elif len(args) == 2:
+      return self.data[rowcol_to_index(args[0], args[1])]
+    else:
+      print "Error. Invalid number of index args: {}.".format(len(args))
+      print "Valid numbers are 1 and 2"
+
+  def __setitem__(self, value, row, col):
+    self.data[rowcol_to_index(row, col)] = value
+
+  def __call__(self, row, col):
+    return self.data[rowcol_to_index(row, col)]
+
+  def __eq__(self, ret_mat):
     for i in range(0,8):
-      if self.data[i] != m[i]:
+      if self.data[i] != ret_mat[i]:
         return False
     return True
 
-  def __ne__(self, m):
+  def __ne__(self, ret_mat):
     for i in range[0,8]:
-      if self.data[i] == m[i]:
+      if self.data[i] == ret_mat[i]:
         return False
     return True
 
   def __neg__(self):
-    m = self.data
+    ret_mat = self.data
     for i in range(0,8):
-      m = -m
-    return m
+      ret_mat[i] = -ret_mat[i]
+    return ret_mat
 
-  def __getitem__(self, index):
-    return self.data[index]
+  def __add__(self, mat):
+    ret_mat = Mat3()
+    for i in range(0,8):
+      ret_mat[i] = self.data[i] + mat[i]
+    return ret_mat
 
-  def __call__(self, row, col):
-    if row == 0:
-      return self.data[col]
-    elif row == 1:
-      return self.data[col + 3]
-    elif row == 2:
-      return self.data[col + 6]
+  def __sub__(self, mat):
+    ret_mat = Mat3()
+    for i in range(0,8):
+      ret_mat[i] = self.data[i] - mat[i]
+    return ret_mat
+
+  def __mul__(self, mat):
+    ret_mat = Mat3()
+    for row in range(0,2):
+      for col in range(0,2):
+        val = 0.0
+        for i in range(0,2):
+          val += self.data[row*3+i] * mat(i, col);
+        ret_mat[row, col] = val
+    return ret_mat
+
+  @staticmethod
+  def mul(self, mat1, mat2):
+    ret_mat = Mat3()
+    for row in range(0,2):
+      for col in range(0,2):
+        val = 0.0
+        for i in range(0,2):
+          val += mat1[row, i] * mat2[i, col]
+        ret_mat[row, col] = val
+    return ret_mat
+
+  def rowcol_to_index(self, row, col):
+    return row * 3 + col
+
 
   def __str__(self):
     return "{} {} {}\n{} {} {}\n{} {} {}".format(
