@@ -3,6 +3,7 @@
 from Vec2 import *
 from Vec3 import *
 from Vec4 import *
+from Mat3 import *
 
 XX = 0;  XY = 1;  XZ = 2;  XW = 3
 YX = 4;  YY = 5;  YZ = 6;  YW = 7
@@ -20,22 +21,36 @@ class Mat4:
     if len(args) == 1:
       if isinstance(args[0], Mat4):
         self.__initialize_from_mat4(*args)
+      elif isinstance(args[0], tuple) or isinstance(args[0], list):
+        self.__initialize_from_tuple(*args)
+      else:
+        print "Error constructing matrix. Unhandled arg of length 1"
     elif len(args) == 16:
-      self.__initialize_from_row_major_ret_mat(*args)
+      if isinstance(args[0], float) or isinstance(args[0], int):
+        self.__initialize_from_row_major_ret_mat(*args)
+      else:
+        print "Error constructing matrix. Unhandled arg of length 16"
+    else:
+      print "Error constructing matrix. Unhandled number of args"
 
   def __initialize_from_row_major_ret_mat(self, 
     m00, m01, m02, m03,
     m10, m11, m12, m13,
     m20, m21, m22, m23,
     m30, m31, m32, m33):
+    print "row major"
     self.data = (
       m00, m01, m02, m03,
       m10, m11, m12, m13,
       m20, m21, m22, m23,
       m30, m31, m32, m33)
 
+  def __initialize_from_tuple(self, mat):
+    self.data = mat
+
   def __initialize_from_mat3(self, mat):
-    for i in range(0,15):
+    print "from mat3"
+    for i in range(0,8):
       self.data[i] = mat[i]
 
   @classmethod
@@ -64,9 +79,9 @@ class Mat4:
       XW, YW, ZW, WW])
 
     for i in range(0,15):
-      transpose_data[i] = data[transpose_indices[i]]
+      transpose_data[i] = self.data[transpose_indices[i]]
 
-    return transpose_data
+    return Mat4(transpose_data)
 
   def row(self, i):
     return Vec4(self.data[4*i+0], self.data[4*i+1], self.data[4*i+2], self.data[4*i+3])
@@ -74,21 +89,24 @@ class Mat4:
   def col(self, i):
     return Vec4(self.data[i+0], self.data[i+4], self.data[i+8], self.data[i+12])
 
+  def rowcol_to_index(self, row, col):
+    return row * 4 + col
+
   def block(self, row, col, rows, cols):
-    x = self.data[rowcol_to_index(row,col)]
+    x = self.data[self.rowcol_to_index(row,col)]
     # row vectors
     if rows == 1:
       if cols == 1:
-        return self.data[rowcol_to_index(row,col)]
+        return self.data[self.rowcol_to_index(row,col)]
       elif cols == 2:
         assert(col <= 2)
-        return Vec2(x, self.data[rowcol_to_index(row,col+1)])
+        return Vec2(x, self.data[self.rowcol_to_index(row,col+1)])
       elif cols == 3:
         assert(col <= 1)
         return Vec3(
           x,
-          self.data[rowcol_to_index(row,col+1)],
-          self.data[rowcol_to_index(row,col+2)])
+          self.data[self.rowcol_to_index(row,col+1)],
+          self.data[self.rowcol_to_index(row,col+2)])
       elif cols == 4:
         return self.row(row)
       else:
@@ -96,18 +114,18 @@ class Mat4:
     # column vectors
     elif cols == 1:
       if rows == 1:
-        return self.data[rowcol_to_index(row,col)]
+        return self.data[self.rowcol_to_index(row,col)]
       elif rows == 2:
         assert(row <= 2)
         return Vec2(
           x,
-          self.data[rowcol_to_index(row+1,col)])
+          self.data[self.rowcol_to_index(row+1,col)])
       elif rows == 3:
         assert(row <= 1)
         return Vec3(
           x,
-          self.data[rowcol_to_index(row+1,col)],
-          self.data[rowcol_to_index(row+2,col)])
+          self.data[self.rowcol_to_index(row+1,col)],
+          self.data[self.rowcol_to_index(row+2,col)])
       elif rows == 4:
         return self.col(col)
       else:
@@ -117,21 +135,21 @@ class Mat4:
       assert cols == 2, "Error! Requested non-square matrix block of size {} by {}".format(rows, cols)
       return Mat2(
         x,
-        self.data[rowcol_to_index(row,col+1)],
-        self.data[rowcol_to_index(row+1,col)],
-        self.data[rowcol_to_index(row+1,col+1)])
+        self.data[self.rowcol_to_index(row,col+1)],
+        self.data[self.rowcol_to_index(row+1,col)],
+        self.data[self.rowcol_to_index(row+1,col+1)])
     elif rows == 3:
       assert cols == 3, "Error! Requested non-square matrix block of size {} by {}".format(rows, cols)
       return Mat3(
         x,
-        self.data[rowcol_to_index(row,col+1)],
-        self.data[rowcol_to_index(row,col+2)],
-        self.data[rowcol_to_index(row+1,col)],
-        self.data[rowcol_to_index(row+1,col+1)],
-        self.data[rowcol_to_index(row+1,col+2)],
-        self.data[rowcol_to_index(row+2,col)],
-        self.data[rowcol_to_index(row+2,col+1)],
-        self.data[rowcol_to_index(row+2,col+2)])
+        self.data[self.rowcol_to_index(row,col+1)],
+        self.data[self.rowcol_to_index(row,col+2)],
+        self.data[self.rowcol_to_index(row+1,col)],
+        self.data[self.rowcol_to_index(row+1,col+1)],
+        self.data[self.rowcol_to_index(row+1,col+2)],
+        self.data[self.rowcol_to_index(row+2,col)],
+        self.data[self.rowcol_to_index(row+2,col+1)],
+        self.data[self.rowcol_to_index(row+2,col+2)])
     else:
       assert 0
 
@@ -179,7 +197,7 @@ class Mat4:
 
       self.data[XW] * (self.data[YX] * self.data[ZY] * self.data[WZ] -
         self.data[YY] * self.data[ZZ] * self.data[WX] -
-        self.data[YZ] * self.data[ZX] * self.data[WY])
+        self.data[YZ] * self.data[ZX] * self.data[WY]))
 
   def det(self):
     return self.determinant()
@@ -265,8 +283,6 @@ class Mat4:
   # def inv(self):
     # return self.inverse()
 
-  def rowcol_to_index(self, row, col):
-    return row * 4 + col
 
   # @staticmethod
   # def cross(self, vec):
@@ -302,22 +318,22 @@ class Mat4:
       0.0, 1.0, 0.0, 0.0,
       0.0, 0.0, 1.0, 0.0,
       0.0, 0.0, 0.0, 1.0])
-    return identity
+    return Mat4(identity)
 
   def __getitem__(self, *args):
     if len(args) == 1:
       return self.data[args[0]]
     elif len(args) == 2:
-      return self.data[rowcol_to_index(args[0], args[1])]
+      return self.data[self.rowcol_to_index(args[0], args[1])]
     else:
       print "Error. Invalid number of index args: {}.".format(len(args))
       print "Valid numbers are 1 and 2"
 
   def __setitem__(self, value, row, col):
-    self.data[rowcol_to_index(row, col)] = value
+    self.data[self.rowcol_to_index(row, col)] = value
 
   def __call__(self, row, col):
-    return self.data[rowcol_to_index(row, col)]
+    return self.data[self.rowcol_to_index(row, col)]
 
   def __eq__(self, ret_mat):
     for i in range(0,15):
@@ -360,7 +376,7 @@ class Mat4:
     return ret_mat
 
   def __str__(self):
-    return "{} {} {} {}\n{} {} {} {}\n{} {} {} {}".format(
+    return "{} {} {} {}\n{} {} {} {}\n{} {} {} {}\n{} {} {} {}".format(
       self.data[XX], self.data[XY], self.data[XZ], self.data[XW],
       self.data[YX], self.data[YY], self.data[YZ], self.data[YW],
       self.data[ZX], self.data[ZY], self.data[ZZ], self.data[ZW],

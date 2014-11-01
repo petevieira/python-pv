@@ -57,7 +57,7 @@ class Mat3:
     for i in range(0,8):
       transpose_data[i] = data[transpose_indices[i]]
 
-    return transpose_data
+    return Mat3(transpose_data)
 
   def row(self, i):
     return Vec3(self.data[3*i+0], self.data[3*i+1], self.data[3*i+2])

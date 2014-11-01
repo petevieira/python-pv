@@ -49,7 +49,7 @@ class Mat2:
     for i in range(0,9):
       transpose_data[i] = data[transpose_indices[i]]
 
-    return transpose_data
+    return Mat2(transpose_data)
 
   def row(self, i):
     return Vec2(self.data[2*i+0], self.data[2*i+1])
