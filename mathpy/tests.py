@@ -3,7 +3,7 @@
 import sys
 from Vec3 import *
 from Mat3 import *
-# from Quat import *
+from Quat import *
 
 def test_Vec3():
 	print "Testing Vec3...\n"
@@ -63,7 +63,8 @@ def test_Quat():
 	q4 = Quat(10)
 	v1 = Vec4(1, 2, 4, 5)
 	q5 = Quat(v1)
-	m1 = Mat3(1,0,0, 0,1,0, 0,0,1)
+	m1 = Quat.from_mat3(Mat3(0,-1,0, 1,0,0, 0,0,1))
+	print "m:\n{}".format(m1)
 	q6 = Quat(m1)
 	print "q1: {}".format(q1)
 	print "q2: {}".format(q2)
@@ -71,6 +72,7 @@ def test_Quat():
 	print "q4: {}".format(q4)
 	print "q5: {}".format(q5)
 	print "q1+q2: {}".format(q1+q2)
+	print "q6: {}".format(q6)
 
 	q1 += q2
 	q2 -= q3

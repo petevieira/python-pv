@@ -5,9 +5,9 @@ import math
 class Vec4():
 
 	def __init__(self, *args):
-		self.x, self.y, self.z, self.w = 0, 0, 0, 1
+		self.x, self.y, self.z, self.w = 0.0, 0.0, 0.0, 0.0
 		if len(args) == 0:
-			self.__initialize_from_scalar(0, 0, 0, 0)
+			self.__initialize_from_scalar(0.0, 0.0, 0.0, 0.0)
 		elif len(args) == 4:
 			self.__initialize_from_floats(*args)
 		elif len(args) == 1:

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from Vec2 import *
 from Vec3 import *
 
 XX = 0; XY = 1; XZ = 2
@@ -53,7 +54,7 @@ class Mat3:
       XY, YY, ZY,
       XZ, YZ, ZZ])
 
-    for i in range(0,9):
+    for i in range(0,8):
       transpose_data[i] = data[transpose_indices[i]]
 
     return transpose_data
@@ -63,6 +64,51 @@ class Mat3:
 
   def col(self, i):
     return Vec3(self.data[i+0], self.data[i+3], self.data[i+6])
+
+  def block(self, row, col, rows, cols):
+    x = self.data[rowcol_to_index(row,col)]
+    # row vectors
+    if rows == 1:
+      if cols == 1:
+        return self.data[rowcol_to_index(row,col)]
+      elif cols == 2:
+        assert(col <= 2)
+        return Vec2(x, self.data[rowcol_to_index(row,col+1)])
+      elif cols == 3:
+        assert(col <= 1)
+        return Vec3(
+          x,
+          self.data[rowcol_to_index(row,col+1)],
+          self.data[rowcol_to_index(row,col+2)])
+      else:
+        assert 0
+    # column vectors
+    elif cols == 1:
+      if rows == 1:
+        return self.data[rowcol_to_index(row,col)]
+      elif rows == 2:
+        assert(row <= 2)
+        return Vec2(
+          x,
+          self.data[rowcol_to_index(row+1,col)])
+      elif rows == 3:
+        assert(row <= 1)
+        return Vec3(
+          x,
+          self.data[rowcol_to_index(row+1,col)],
+          self.data[rowcol_to_index(row+2,col)])
+      else:
+        assert 0
+    # square matrices
+    elif rows == 2:
+      assert cols == 2, "Error! Requested non-square matrix block of size {} by {}".format(rows, cols)
+      return Mat2(
+        x,
+        self.data[rowcol_to_index(row,col+1)],
+        self.data[rowcol_to_index(row+1,col)],
+        self.data[rowcol_to_index(row+1,col+1)])
+    else:
+      assert 0
 
   def set_row(self, i, vec):
     self.data[3*i+0] = vec[0]
@@ -77,28 +123,31 @@ class Mat3:
   def determinant(self):
     return (
       self.data[XX] * (self.data[YY] * self.data[ZZ] - self.data[YZ] * self.data[ZY]) -
-      self.data[XY] * (self.data[YX] * self.data[ZZ] - self.data[YZ] * self.data[ZX]) +
+      self.data[XY] * (self.data[YZ] * self.data[ZX] - self.data[YX] * self.data[ZZ]) +
       self.data[XZ] * (self.data[YX] * self.data[ZY] - self.data[YY] * self.data[ZX]))
 
   def det(self):
     return self.determinant()
 
   def inverse(self):
-    det = self.determinant()
-    m = ()
-    m[XX] = (self.data[YY] * self.data[ZZ] - self.data[YZ] * self.data[ZY]) * det;
-    m[XY] = (self.data[XZ] * self.data[ZY] - self.data[XY] * self.data[ZZ]) * det;
-    m[XZ] = (self.data[XY] * self.data[YZ] - self.data[XZ] * self.data[YY]) * det;
-    m[YX] = (self.data[YZ] * self.data[ZX] - self.data[YX] * self.data[ZZ]) * det;
-    m[YY] = (self.data[XX] * self.data[ZZ] - self.data[XZ] * self.data[ZX]) * det;
-    m[YZ] = (self.data[XZ] * self.data[YX] - self.data[XX] * self.data[YZ]) * det;
-    m[ZX] = (self.data[YX] * self.data[ZY] - self.data[YY] * self.data[ZX]) * det;
-    m[ZY] = (self.data[XY] * self.data[ZX] - self.data[XX] * self.data[ZY]) * det;
-    m[ZZ] = (self.data[XX] * self.data[YY] - self.data[XY] * data[YX]) * det;
+    inv_det = 1/self.determinant()
+    m = Mat3()
+    m[XX] = (self.data[YY] * self.data[ZZ] - self.data[YZ] * self.data[ZY]) * inv_det;
+    m[XY] = (self.data[XZ] * self.data[ZY] - self.data[XY] * self.data[ZZ]) * inv_det;
+    m[XZ] = (self.data[XY] * self.data[YZ] - self.data[XZ] * self.data[YY]) * inv_det;
+    m[YX] = (self.data[YZ] * self.data[ZX] - self.data[YX] * self.data[ZZ]) * inv_det;
+    m[YY] = (self.data[XX] * self.data[ZZ] - self.data[XZ] * self.data[ZX]) * inv_det;
+    m[YZ] = (self.data[XZ] * self.data[YX] - self.data[XX] * self.data[YZ]) * inv_det;
+    m[ZX] = (self.data[YX] * self.data[ZY] - self.data[YY] * self.data[ZX]) * inv_det;
+    m[ZY] = (self.data[XY] * self.data[ZX] - self.data[XX] * self.data[ZY]) * inv_det;
+    m[ZZ] = (self.data[XX] * self.data[YY] - self.data[XY] * self.data[YX]) * inv_det;
     return m;
 
   def inv(self):
     return self.inverse()
+
+  def rowcol_to_index(self, row, col):
+    return row * 3 + col
 
   @staticmethod
   def cross(self, vec):
@@ -115,6 +164,25 @@ class Mat3:
       for col in range(0,2):
         ret_mat[row, col] = vec1[row] * vec2[col]
     return ret_mat
+
+  @staticmethod
+  def mul(self, mat1, mat2):
+    ret_mat = Mat3()
+    for row in range(0,2):
+      for col in range(0,2):
+        val = 0.0
+        for i in range(0,2):
+          val += mat1[row, i] * mat2[i, col]
+        ret_mat[row, col] = val
+    return ret_mat
+
+  @staticmethod
+  def identity():
+    identity = ([
+      1.0, 0.0, 0.0,
+      0.0, 1.0, 0.0,
+      0.0, 0.0, 1.0])
+    return identity
 
   def __getitem__(self, *args):
     if len(args) == 1:
@@ -171,31 +239,9 @@ class Mat3:
         ret_mat[row, col] = val
     return ret_mat
 
-  @staticmethod
-  def mul(self, mat1, mat2):
-    ret_mat = Mat3()
-    for row in range(0,2):
-      for col in range(0,2):
-        val = 0.0
-        for i in range(0,2):
-          val += mat1[row, i] * mat2[i, col]
-        ret_mat[row, col] = val
-    return ret_mat
-
-  def rowcol_to_index(self, row, col):
-    return row * 3 + col
-
-
   def __str__(self):
     return "{} {} {}\n{} {} {}\n{} {} {}".format(
       self.data[XX], self.data[XY], self.data[XZ],
       self.data[YX], self.data[YY], self.data[YZ],
       self.data[ZX], self.data[ZY], self.data[ZZ])
 
-  @staticmethod
-  def identity():
-    identity = ([
-      1.0, 0.0, 0.0,
-      0.0, 1.0, 0.0,
-      0.0, 0.0, 1.0])
-    return identity
