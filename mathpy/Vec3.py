@@ -60,6 +60,15 @@ class Vec3():
 	def z(self):
 		return self.z
 
+	def roll(self):
+		return self.x
+
+	def pitch(self):
+		return self.y
+
+	def yaw(self):
+		return self.z
+
 	def __len__(self):
 		return 3
 

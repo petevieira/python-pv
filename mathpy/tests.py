@@ -64,7 +64,7 @@ def test_Quat():
 	v1 = Vec4(1, 2, 4, 5)
 	q5 = Quat(v1)
 	m1 = Quat.from_mat3(Mat3(0,-1,0, 1,0,0, 0,0,1))
-	print "m:\n{}".format(m1)
+	print "m: {}".format(m1)
 	q6 = Quat(m1)
 	print "q1: {}".format(q1)
 	print "q2: {}".format(q2)

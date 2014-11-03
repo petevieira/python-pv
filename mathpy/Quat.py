@@ -82,5 +82,21 @@ class Quat(Vec4):
 	# def from_two_vectors(self, vec1, vec2):
 
 
+	@staticmethod
+	def from_euler(rpy_vec):
+		Cr = cos(0.5*rpy_vec.roll())
+		Cp = cos(0.5*rpy_vec.pitch())
+		Cy = cos(0.5*rpy_vec.yaw())
+		Sr = sin(0.5*rpy_vec.roll())
+		Sp = sin(0.5*rpy_vec.pitch())
+		Sy = sin(0.5*rpy_vec.yaw())
+
+		qx = Sr*Cp*Cy - Cr*Sp*Sy
+		qy = Cr*Sp*Cy + Sr*Cp*Sy
+		qz = Cr*Cp*Sy - Sr*Sp*Cy
+		qw = Cr*Cp*Cy + Sr*Sp*Sy
+
+		return Quat(qx, qy, qz, qw)
+
 	def __str__(self):
 		return "({0}, {1}, {2}, {3})".format(self.x, self.y, self.z, self.w)
