@@ -9,7 +9,7 @@ class Mat2:
 
   def __init__(self, *args):
     self.data = ([
-      0.0, 0.0
+      0.0, 0.0,
       0.0, 0.0])
     if len(args) == 1:
       if isinstance(args[0], Mat2):
@@ -35,9 +35,17 @@ class Mat2:
 
   @classmethod
   def from_cols(self, v1, v2):
-    return Mat3(
+    return Mat2(
       v1[0], v2[0],
       v1[1], v2[1])
+
+  @classmethod
+  def from_angle(self, theta):
+    cos_theta = cos(theta)
+    sin_theta = sin(theta)
+    return Mat2(
+      cos_theta, -sin_theta,
+      sin_theta,  cos_theta)
 
   def transpose(self):
     transpose_data = self.data
@@ -46,7 +54,7 @@ class Mat2:
       XX, YX,
       XY, YY])
 
-    for i in range(0,9):
+    for i in range(0,3):
       transpose_data[i] = data[transpose_indices[i]]
 
     return Mat2(transpose_data)
@@ -58,8 +66,8 @@ class Mat2:
     return Vec2(self.data[i+0], self.data[i+2])
 
   def set_row(self, i, vec):
-    self.data[3*i+0] = vec[0]
-    self.data[3*i+1] = vec[1]
+    self.data[2*i+0] = vec[0]
+    self.data[2*i+1] = vec[1]
 
   def set_col(self, i, vec):
     self.data[i+0] = vec[0]
@@ -83,15 +91,7 @@ class Mat2:
     return self.inverse()
 
   def rowcol_to_index(self, row, col):
-    return row * 3 + col
-
-  @staticmethod
-  def cross(self, vec):
-    mat = Mat3()
-    mat[0,0] =    0 ; mat[0,1] = -v[2]; mat[0,2] =  v[1]
-    mat[1,0] =  v[2]; mat[1,1] =    0 ; mat[1,2] = -v[0]
-    mat[2,0] = -v[1]; mat[2,1] =  v[0]; mat[2,2] =    0
-    return m
+    return row * 1 + col
 
   @staticmethod
   def outer(self, vec1, vec2):
@@ -118,6 +118,18 @@ class Mat2:
       1.0, 0.0,
       0.0, 1.0])
     return identity
+
+  @staticmethod
+  def zeros():
+    return Mat2(
+      0.0, 0.0,
+      0.0, 0.0)
+
+  @staticmethod
+  def ones():
+    return Mat2(
+      1.0, 1.0,
+      1.0, 1.0)
 
   def __getitem__(self, *args):
     if len(args) == 1:
@@ -153,13 +165,13 @@ class Mat2:
     return ret_mat
 
   def __add__(self, mat):
-    ret_mat = Mat3()
+    ret_mat = Mat2()
     for i in range(0,3):
       ret_mat[i] = self.data[i] + mat[i]
     return ret_mat
 
   def __sub__(self, mat):
-    ret_mat = Mat3()
+    ret_mat = Mat2()
     for i in range(0,3):
       ret_mat[i] = self.data[i] - mat[i]
     return ret_mat
@@ -169,12 +181,12 @@ class Mat2:
     for row in range(0,1):
       for col in range(0,1):
         val = 0.0
-        for i in range(0,2):
+        for i in range(0,1):
           val += self.data[row*2+i] * mat(i, col);
         ret_mat[row, col] = val
     return ret_mat
 
   def __str__(self):
     return "{} {} {}\n{} {} {}\n{} {} {}".format(
-      self.data[XX], self.data[XY]
+      self.data[XX], self.data[XY],
       self.data[YX], self.data[YY])

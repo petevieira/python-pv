@@ -2,6 +2,7 @@
 
 from Vec4 import *
 from Mat3 import *
+from math import *
 
 class Quat(Vec4):
 	def __init__(self, *args):

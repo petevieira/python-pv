@@ -49,8 +49,7 @@ class Mat4:
     self.data = mat
 
   def __initialize_from_mat3(self, mat):
-    print "from mat3"
-    for i in range(0,8):
+    for i in range(0,15):
       self.data[i] = mat[i]
 
   @classmethod
@@ -320,6 +319,22 @@ class Mat4:
       0.0, 0.0, 0.0, 1.0])
     return Mat4(identity)
 
+  @staticmethod
+  def zeros():
+    return Mat4(
+      0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0)
+
+  @staticmethod
+  def ones():
+    return Mat4(
+      1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0, 1.0)
+
   def __getitem__(self, *args):
     if len(args) == 1:
       return self.data[args[0]]
@@ -332,8 +347,14 @@ class Mat4:
   def __setitem__(self, value, row, col):
     self.data[self.rowcol_to_index(row, col)] = value
 
-  def __call__(self, row, col):
-    return self.data[self.rowcol_to_index(row, col)]
+  def __call__(self, *args):
+    if len(args) == 1:
+      return self.data[args[0]]
+    elif len(args) == 2:
+      return self.data[rowcol_to_index(args[0], args[1])]
+    else:
+      print "Error. Invalid number of index args: {}.".format(len(args))
+      print "Valid numbers are 1 and 2"
 
   def __eq__(self, ret_mat):
     for i in range(0,15):
@@ -365,14 +386,18 @@ class Mat4:
       ret_mat[i] = self.data[i] - mat[i]
     return ret_mat
 
-  def __mul__(self, mat):
+  def __mul__(self, *args):
     ret_mat = Mat4()
     for row in range(0,3):
       for col in range(0,3):
-        val = 0.0
-        for i in range(0,3):
-          val += self.data[row*4+i] * mat(i, col);
-        ret_mat[row, col] = val
+        if isinstance(args[0], float):
+          ret_mat[row, col] = self.data[row*4+i] * args[0]
+        elif isinstance(args[0], Mat4):
+          mat = args[0]
+          val = 0.0
+          for i in range(0,3):
+            val += self.data[row*4+i] * mat(i, col);
+            ret_mat[row, col] = val
     return ret_mat
 
   def __str__(self):

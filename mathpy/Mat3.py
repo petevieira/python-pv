@@ -184,6 +184,20 @@ class Mat3:
       0.0, 0.0, 1.0])
     return identity
 
+  @staticmethod
+  def zeros():
+    return Mat3(
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0)
+
+  @staticmethod
+  def ones():
+    return Mat3(
+      1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0,
+      1.0, 1.0, 1.0)
+
   def __getitem__(self, *args):
     if len(args) == 1:
       return self.data[args[0]]
@@ -196,8 +210,14 @@ class Mat3:
   def __setitem__(self, value, row, col):
     self.data[rowcol_to_index(row, col)] = value
 
-  def __call__(self, row, col):
-    return self.data[rowcol_to_index(row, col)]
+  def __call__(self, *args):
+    if len(args) == 1:
+      return self.data[args[0]]
+    elif len(args) == 2:
+      return self.data[rowcol_to_index(args[0], args[1])]
+    else:
+      print "Error. Invalid number of index args: {}.".format(len(args))
+      print "Valid numbers are 1 and 2"
 
   def __eq__(self, ret_mat):
     for i in range(0,8):
@@ -229,14 +249,18 @@ class Mat3:
       ret_mat[i] = self.data[i] - mat[i]
     return ret_mat
 
-  def __mul__(self, mat):
+  def __mul__(self, *args):
     ret_mat = Mat3()
     for row in range(0,2):
       for col in range(0,2):
-        val = 0.0
-        for i in range(0,2):
-          val += self.data[row*3+i] * mat(i, col);
-        ret_mat[row, col] = val
+        if isinstance(args[0], float):
+          ret_mat[row, col] = self.data[row*3+i] * args[0]
+        elif isinstance(args[0], Mat3):
+          mat = args[0]
+          val = 0.0
+          for i in range(0,2):
+            val += self.data[row*3+i] * mat(i, col);
+            ret_mat[row, col] = val
     return ret_mat
 
   def __str__(self):
