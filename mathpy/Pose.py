@@ -4,6 +4,7 @@ from Vec3 import *
 from Mat3 import *
 from Mat4 import *
 
+# Labeled indices of the Pose matrix
 XX = 0;  XY = 1;  XZ = 2;  XW = 3
 YX = 4;  YY = 5;  YZ = 6;  YW = 7
 ZX = 8;  ZY = 9;  ZZ = 10; ZW = 11
@@ -55,9 +56,21 @@ class Pose(Mat4):
       v1[3], v2[3], v3[3], v4[3])
 
   def rotation(self):
+    """ Gets the rotation part of the transformation matrix
+
+    Returns:
+      The 3x3 rotation matrix for this pose
+
+    """
     return self.block(0,0,3,3)
 
   def translation(self):
+    """ Gets the translation part of the transformation matrix
+
+    Returns:
+      The 3x1 translation vector for this pose
+
+    """
     return Vec3(
       self.data[XW], self.data[YW], self.data[ZW])
 

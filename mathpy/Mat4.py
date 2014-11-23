@@ -5,6 +5,7 @@ from Vec3 import *
 from Vec4 import *
 from Mat3 import *
 
+# Labeled indices of the matrix
 XX = 0;  XY = 1;  XZ = 2;  XW = 3
 YX = 4;  YY = 5;  YZ = 6;  YW = 7
 ZX = 8;  ZY = 9;  ZZ = 10; ZW = 11

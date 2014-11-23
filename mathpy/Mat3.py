@@ -3,6 +3,7 @@
 from Vec2 import *
 from Vec3 import *
 
+# Labeled indices of the matrix
 XX = 0; XY = 1; XZ = 2
 YX = 3; YY = 4; YZ = 5
 ZX = 6; ZY = 7; ZZ = 8

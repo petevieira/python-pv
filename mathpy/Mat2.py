@@ -2,12 +2,16 @@
 
 from Vec3 import *
 
+# Labeled indices of the matrix
 XX = 0; XY = 1
 YX = 2; YY = 3
 
 class Mat2:
-
+  """ 2x2 Matrix class.
+  """
   def __init__(self, *args):
+    """ Constructs a 2x2 matrix from a Mat2 or 4 scalars
+    """
     self.data = ([
       0.0, 0.0,
       0.0, 0.0])
@@ -187,6 +191,6 @@ class Mat2:
     return ret_mat
 
   def __str__(self):
-    return "{} {} {}\n{} {} {}\n{} {} {}".format(
+    return "{} {}\n{} {}\n{} {}".format(
       self.data[XX], self.data[XY],
       self.data[YX], self.data[YY])

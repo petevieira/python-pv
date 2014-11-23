@@ -2,10 +2,22 @@
 
 from Vec4 import *
 from Mat3 import *
-from math import *
+from Mat4 import *
+from math import * # for trigonometry and square root
 
 class Quat(Vec4):
+	""" Quaternion using floats. x,y,z,w
+	"""
 	def __init__(self, *args):
+		""" Constructs a Quaternion from 4D-tuple, 4 scalars or a Vec4
+
+		Args:
+		  *args: list of arguments.
+		    4D tuple: sets Quaternion data from tuple values 
+		    3 scalars: sets Quaternion data from three floats or integers
+		    Vec4: sets Quaternion data from a Vec4 vector
+
+		"""
 		Vec4.__init__(self, 0.0, 0.0, 0.0, 1.0)
 		if len(args) == 0:
 			Vec4.__init__(self, 0.0, 0.0, 0.0, 1.0)
@@ -24,10 +36,28 @@ class Quat(Vec4):
 			print "is 1 or 4. You pass {} arguments".format(len(args))
 
 	def __initialize_from_vec4(self, vec):
+		""" Initializes the Quaterion from the Vec4 vec
+
+		Args:
+		  vec (Vec4): 4D vector from which to initialize the quaternion
+		              in format (x,y,z,w)
+
+		"""
 		Vec4.__init__(self, vec.x, vec.y, vec.z, vec.w)
 
 	@staticmethod
 	def from_axis_angle(axis, angle):
+		""" Creates a Quaternion from an axis and an angle
+
+		Args:
+		  axis (Vec3): Axis of rotation.
+		  angle (float): Angle to rotate by (radians).
+
+		Returns:
+  		Quaterions corresponding to the rotation about "axis"
+  		by "angle" radians
+
+		"""
 		axis_norm = axis.norm()
 		sine_angle = sin(angle/2)
 		x = axis.x() * sine_angle / axis_norm
@@ -38,6 +68,15 @@ class Quat(Vec4):
 
 	@staticmethod
 	def from_mat3(mat):
+		""" Creates a quaternion from a 3x3 matrix
+
+		Args:
+		  mat (Mat3): 3x3 matrix from which to create a quaternion
+
+		Returns:
+		  The quaternion corresponding to the 3x3 rotation matrix
+
+		"""
 		qx, qy, qz, qw = 0.0, 0.0, 0.0, 1.0
 
 		trace = 1 + mat[XX] + mat[YY] + mat[ZZ]
@@ -77,6 +116,16 @@ class Quat(Vec4):
 
 	@staticmethod
 	def from_mat4(mat):
+		""" Creates a quaternion from the rotation part of a 4x4 matrix
+
+		Args:
+		  mat (Mat4): 4x4 matrix from which to create a quaternion
+
+		Returns:
+		  The quaternion corresponding to the 3x3 rotation matrix
+		  inside the 4x4 matrix
+
+		"""		
 		return self.from_mat3(mat.block(0,0,3,3))
 
 	# @staticmethod
@@ -85,6 +134,15 @@ class Quat(Vec4):
 
 	@staticmethod
 	def from_euler(rpy_vec):
+		""" Creates a quaternion from roll, pitch, yaw Euler angles
+
+		Args:
+		  rpy_vec (Vec3): Euler angles vector
+
+		Returns:
+		  Quaternion corresponding to the Euler angles
+
+		"""
 		Cr = cos(0.5*rpy_vec.roll())
 		Cp = cos(0.5*rpy_vec.pitch())
 		Cy = cos(0.5*rpy_vec.yaw())
@@ -100,4 +158,10 @@ class Quat(Vec4):
 		return Quat(qx, qy, qz, qw)
 
 	def __str__(self):
+		""" Creates a string from the quaternion, to be used with print
+
+		Returns:
+		  String version of this quaternion
+
+		"""
 		return "({0}, {1}, {2}, {3})".format(self.x, self.y, self.z, self.w)
