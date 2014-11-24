@@ -296,6 +296,15 @@ class Mat3:
 
   @staticmethod
   def cross(self, vec):
+    """ Returns the skew-symmetric cross product of the given vector
+
+    Args:
+      vec: Vec3 vector to compute the cross product of
+
+    Returns:
+      the skew-symmetric cross product matrix of vec
+
+    """
     mat = Mat3()
     mat[0,0] =    0 ; mat[0,1] = -v[2]; mat[0,2] =  v[1]
     mat[1,0] =  v[2]; mat[1,1] =    0 ; mat[1,2] = -v[0]
@@ -509,7 +518,7 @@ class Mat3:
 
     Args:
       mat: 3x3 Mat3 matrix to multiply the matrix by
-      float: scalar to multiply each element by
+      scalar: scalar to multiply each element by
 
     Returns:
       the result of multiplying the two matrices
