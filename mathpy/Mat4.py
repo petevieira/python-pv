@@ -12,8 +12,7 @@ ZX = 8;  ZY = 9;  ZZ = 10; ZW = 11
 WX = 12; WY = 13; WZ = 14; WW = 15
 
 class Mat4:
-  """ 4x4 Matrix class.
-  """
+  """ 4x4 Matrix class """
 
   def __init__(self, *args):
     """ Constructs a 4x4 matrix from a Mat4 or 16 scalars

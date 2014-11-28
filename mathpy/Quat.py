@@ -5,6 +5,11 @@ from Mat3 import *
 from Mat4 import *
 from math import * # for trigonometry and square root
 
+# Labeled indices of the matrix
+XX = 0; XY = 1; XZ = 2
+YX = 3; YY = 4; YZ = 5
+ZX = 6; ZY = 7; ZZ = 8
+
 class Quat(Vec4):
 	""" Quaternion using floats. x,y,z,w
 	"""
