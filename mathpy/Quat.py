@@ -169,4 +169,4 @@ class Quat(Vec4):
 		  String version of this quaternion
 
 		"""
-		return "({0}, {1}, {2}, {3})".format(self.x, self.y, self.z, self.w)
+		return "({0}, {1}, {2}, {3})".format(self.x(), self.y(), self.z(), self.w())

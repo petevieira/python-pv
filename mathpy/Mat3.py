@@ -31,6 +31,9 @@ class Mat3:
         self.__initialize_from_mat3(*args)
     elif len(args) == 9:
       self.__initialize_from_row_major_ret_mat(*args)
+    elif len(args) != 0:
+      print "error. invalid number of arguments"
+      assert(0)
 
   def __initialize_from_row_major_ret_mat(self, 
     m00, m01, m02,

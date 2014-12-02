@@ -28,6 +28,9 @@ class Mat2:
         self.__initialize_from_mat2(*args)
     elif len(args) == 4:
       self.__initialize_from_row_major_ret_mat(*args)
+    elif len(args) != 0:
+      print "error. invalid number of arguemnts"
+      assert(0)
 
   def __initialize_from_row_major_ret_mat(self, 
     m00, m01,
@@ -67,9 +70,10 @@ class Mat2:
       a Mat2 matrix
 
     """
+    assert(type(v1) == Vec2 and type(v2) == Vec2)
     return Mat2(
-      v1[0], v1[1]
-      v2[0], v2[1])
+      v1.x(), v1.y(),
+      v2.x(), v2.y())
 
   @classmethod
   def from_cols(self, v1, v2):
@@ -84,8 +88,8 @@ class Mat2:
 
     """
     return Mat2(
-      v1[0], v2[0],
-      v1[1], v2[1])
+      v1.x(), v2.x(),
+      v1.y(), v2.y())
 
   @classmethod
   def from_angle(self, theta):
@@ -122,6 +126,30 @@ class Mat2:
       transpose_data[i] = data[transpose_indices[i]]
 
     return Mat2(transpose_data)
+
+  def xx(self):
+    """ Returns the 0,0 element of the matrix
+
+    """
+    return self.data[XX]
+
+  def xy(self):
+    """ Returns the 0,1 element of the matrix
+
+    """
+    return self.data[XY]
+
+  def yx(self):
+    """ Returns the 1,0 element of the matrix
+
+    """
+    return self.data[YX]
+
+  def yy(self):
+    """ Returns the 1,1 element of the matrix
+
+    """
+    return self.data[YY]
 
   def num_rows(self):
     """ Returns the number of rows in the matrix
@@ -290,10 +318,9 @@ class Mat2:
       the Mat2 2x2 identity matrix
 
     """
-    identity = ([
+    return Mat2(
       1.0, 0.0,
-      0.0, 1.0])
-    return identity
+      0.0, 1.0)
 
   @staticmethod
   def zeros():
@@ -458,6 +485,6 @@ class Mat2:
     """ Returns the string version of the matrix
 
     """
-    return "{} {}\n{} {}\n{} {}".format(
+    return "{} {}\n{} {}".format(
       self.data[XX], self.data[XY],
       self.data[YX], self.data[YY])
